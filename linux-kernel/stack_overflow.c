@@ -20,8 +20,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <sys/mman.h>
-#include <string.h>
 #include <stdlib.h>
 
 #define DEV "/dev/tostring"
@@ -111,7 +109,7 @@ int main(void) {
     }
 
     if (trigger(fd) < 0) {
-      perror("[!] Failed to trigger null pointer deref");
+      perror("[!] Failed to trigger stack overflow");
       return -1;
     }
 
