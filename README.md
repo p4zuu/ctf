@@ -1,3 +1,3 @@
-## ctf repo
+## CTF
 
-Small repo where I push some ctf solutions.
+Some CTF solutions
