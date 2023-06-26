@@ -5,6 +5,8 @@ import base64
 
 """
 This has been solved after the end of the CTF unfortunately.
+
+Most of this challenge is reversing.
 """
 
 #context.log_level = logging.DEBUG
@@ -23,11 +25,6 @@ r = remote(HOST, PORT)
 # #b unpack_bools
 # b fix_corrupt_booleans
 # """)
-
-
-"""
-| len (32 bits) | type (32 bits) | ?  |
-"""
 
 # Message 1: $CTF string to unpack, to call getenv($FLAG)
 string_len = 0x24
