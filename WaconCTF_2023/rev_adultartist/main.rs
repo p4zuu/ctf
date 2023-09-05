@@ -110,11 +110,7 @@ fn brute_function(content: &Vec<u8>, function_index: usize) -> Option<u32> {
         if i < content.len() - BIN_S_BOX_OPCODE.len()
             && content[i..i + BIN_S_BOX_OPCODE.len()] == BIN_S_BOX_OPCODE
         {
-            /*
-             * This sometimes needs to be adjusted.
-             * the Rust S_BOX address changes if you modify the program.
-             */
-            byte_code.extend_from_slice(&[0xD8, 0x40, 0x09, 0x08]);
+            byte_code.extend_from_slice(&(S_BOX.as_ptr() as u32).to_le_bytes();
             i += BIN_S_BOX_OPCODE.len();
             continue;
         }
